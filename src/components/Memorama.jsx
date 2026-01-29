@@ -12,6 +12,8 @@ function Memorama({ onPointsUpdate, onMemoramaCompleteFirstTry }) {
   const [hasRestarted, setHasRestarted] = useState(false)
   const hasReportedFirstTry = useRef(false)
 
+  const allMatched = matchedPairs.length === members.length
+
   useEffect(() => {
     initializeGame()
   }, [])
@@ -42,12 +44,12 @@ function Memorama({ onPointsUpdate, onMemoramaCompleteFirstTry }) {
 
   const handleCardClick = (cardId) => {
     if (isChecking || flippedCards.length === 2) return
-    
-    const card = cards.find(c => c.id === cardId)
-    if (card.isFlipped || matchedPairs.includes(card.name)) return
 
-    const newCards = cards.map(card =>
-      card.id === cardId ? { ...card, isFlipped: true } : card
+    const clickedCard = cards.find(c => c.id === cardId)
+    if (!clickedCard || clickedCard.isFlipped || matchedPairs.includes(clickedCard.name)) return
+
+    const newCards = cards.map(c =>
+      c.id === cardId ? { ...c, isFlipped: true } : c
     )
     setCards(newCards)
     setFlippedCards([...flippedCards, cardId])
@@ -64,6 +66,11 @@ function Memorama({ onPointsUpdate, onMemoramaCompleteFirstTry }) {
     const [firstId, secondId] = flippedIds
     const firstCard = cards.find(c => c.id === firstId)
     const secondCard = cards.find(c => c.id === secondId)
+    if (!firstCard || !secondCard) {
+      setFlippedCards([])
+      setIsChecking(false)
+      return
+    }
 
     if (firstCard.name === secondCard.name) {
       // ¡Coincidencia!
@@ -79,10 +86,10 @@ function Memorama({ onPointsUpdate, onMemoramaCompleteFirstTry }) {
       // No coinciden, voltear de nuevo
       playErrorSound() // Sonido de error
       setTimeout(() => {
-        const newCards = cards.map(card =>
-          flippedIds.includes(card.id) && !matchedPairs.includes(card.name)
-            ? { ...card, isFlipped: false }
-            : card
+        const newCards = cards.map(c =>
+          flippedIds.includes(c.id) && !matchedPairs.includes(c.name)
+            ? { ...c, isFlipped: false }
+            : c
         )
         setCards(newCards)
         setFlippedCards([])
@@ -90,8 +97,6 @@ function Memorama({ onPointsUpdate, onMemoramaCompleteFirstTry }) {
       }, 1000)
     }
   }
-
-  const allMatched = matchedPairs.length === members.length
 
   return (
     <div className="memorama">
