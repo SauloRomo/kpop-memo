@@ -122,7 +122,15 @@ function Memorama({ onPointsUpdate }) {
                     <span className="card-icon">🎵</span>
                   </div>
                   <div className="card-back">
-                    <img src={card.image} alt={card.name} />
+                    <img 
+                      src={card.image} 
+                      alt={card.name} 
+                      onError={(e) => {
+                        // Fallback si la imagen no carga
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(card.name)}&background=667eea&color=fff&size=400&bold=true`
+                      }}
+                      loading="lazy"
+                    />
                     <p className="card-name">{card.name}</p>
                     <p className="card-group">{card.group}</p>
                   </div>

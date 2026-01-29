@@ -106,6 +106,8 @@
   object-fit: cover;
   border-radius: 8px;
   margin-bottom: 8px;
+  background: #f0f0f0;
+  min-height: 120px;
 }
 
 .card-name {
