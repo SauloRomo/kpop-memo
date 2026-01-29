@@ -3,12 +3,13 @@ import './Trivia.css'
 import { triviaQuestions } from '../data/trivia'
 import { playSuccessSound, playErrorSound } from '../utils/sounds'
 
-function Trivia({ onPointsUpdate }) {
+function Trivia({ onPointsUpdate, onTriviaComplete }) {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [score, setScore] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState(null)
   const [showResult, setShowResult] = useState(false)
   const [gameFinished, setGameFinished] = useState(false)
+  const [hasErrors, setHasErrors] = useState(false)
 
   useEffect(() => {
     // Mezclar las preguntas al iniciar
@@ -18,7 +19,15 @@ function Trivia({ onPointsUpdate }) {
     setSelectedAnswer(null)
     setShowResult(false)
     setGameFinished(false)
+    setHasErrors(false)
   }, [])
+
+  useEffect(() => {
+    // Solo dar estrella si completaste sin errores
+    if (gameFinished && onTriviaComplete && !hasErrors) {
+      onTriviaComplete()
+    }
+  }, [gameFinished, hasErrors, onTriviaComplete])
 
   const handleAnswerSelect = (answer) => {
     if (showResult) return
@@ -37,6 +46,7 @@ function Trivia({ onPointsUpdate }) {
       onPointsUpdate(10)
     } else {
       playErrorSound() // Sonido de error
+      setHasErrors(true) // Marcar que hubo un error
     }
   }
 
@@ -57,6 +67,7 @@ function Trivia({ onPointsUpdate }) {
     setSelectedAnswer(null)
     setShowResult(false)
     setGameFinished(false)
+    setHasErrors(false)
   }
 
   if (gameFinished) {
@@ -67,12 +78,18 @@ function Trivia({ onPointsUpdate }) {
         </div>
         <div className="final-score">
           <h3>🎉 ¡Juego Terminado! 🎉</h3>
+          {hasErrors ? (
+            <p className="trivia-no-star">❌ Completaste la trivia pero con errores. Intenta sin equivocarte para ganar una estrella.</p>
+          ) : (
+            <p className="trivia-star-reward">⭐ ¡Completaste la trivia sin errores y ganaste una estrella! (máximo 3)</p>
+          )}
           <div className="score-display">
             <p className="score-label">Puntos Totales:</p>
             <p className="score-value">{score}</p>
           </div>
           <p className="score-description">
             Respondiste {triviaQuestions.length} preguntas
+            {hasErrors && <span className="error-note"> (con algunos errores)</span>}
           </p>
           <button onClick={handleRestart} className="restart-button">
             Jugar de Nuevo

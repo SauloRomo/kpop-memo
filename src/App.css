@@ -21,6 +21,27 @@
   margin: 0;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.stars-badge {
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+}
+
+.stars-badge .star-filled {
+  animation: star-pop 0.5s ease-out;
+}
+
+@keyframes star-pop {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 .points-display {
   display: flex;
   align-items: center;
@@ -110,6 +131,76 @@
   background: #5a6268;
 }
 
+/* Modal 3ª estrella */
+.third-star-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.third-star-modal {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 0 40px rgba(102, 126, 234, 0.5), 0 0 80px rgba(255, 215, 0, 0.2);
+  border: 2px solid rgba(255, 215, 0, 0.5);
+  animation: modalPop 0.4s ease-out;
+}
+
+.third-star-stars {
+  font-size: 4rem;
+  margin-bottom: 15px;
+  letter-spacing: 8px;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+}
+
+.third-star-title {
+  font-size: 1.8rem;
+  margin: 0 0 20px;
+  color: #ffd700;
+}
+
+.third-star-message {
+  font-size: 1.25rem;
+  line-height: 1.5;
+  margin: 0 0 25px;
+  opacity: 0.95;
+}
+
+.third-star-close {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.third-star-close:hover {
+  transform: scale(1.05);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalPop {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
 @media (max-width: 768px) {
   .app-header {
     flex-direction: column;
@@ -122,5 +213,18 @@
 
   .game-buttons {
     grid-template-columns: 1fr;
+  }
+
+  .third-star-modal {
+    margin: 20px;
+    padding: 30px 20px;
+  }
+
+  .third-star-stars {
+    font-size: 3rem;
+  }
+
+  .third-star-title {
+    font-size: 1.5rem;
   }
 }

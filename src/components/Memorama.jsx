@@ -1,20 +1,30 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './Memorama.css'
 import { members } from '../data/members'
 import { playMatchSound, playErrorSound } from '../utils/sounds'
 
-function Memorama({ onPointsUpdate }) {
+function Memorama({ onPointsUpdate, onMemoramaCompleteFirstTry }) {
   const [cards, setCards] = useState([])
   const [flippedCards, setFlippedCards] = useState([])
   const [matchedPairs, setMatchedPairs] = useState([])
   const [points, setPoints] = useState(0)
   const [isChecking, setIsChecking] = useState(false)
+  const [hasRestarted, setHasRestarted] = useState(false)
+  const hasReportedFirstTry = useRef(false)
 
   useEffect(() => {
     initializeGame()
   }, [])
 
-  const initializeGame = () => {
+  useEffect(() => {
+    if (allMatched && !hasRestarted && !hasReportedFirstTry.current && onMemoramaCompleteFirstTry) {
+      hasReportedFirstTry.current = true
+      onMemoramaCompleteFirstTry()
+    }
+  }, [allMatched, hasRestarted, onMemoramaCompleteFirstTry])
+
+  const initializeGame = (isRestart = false) => {
+    if (isRestart) setHasRestarted(true)
     // Duplicar las tarjetas y mezclarlas
     const duplicatedCards = [...members, ...members].map((member, index) => ({
       ...member,
@@ -103,8 +113,11 @@ function Memorama({ onPointsUpdate }) {
         <div className="victory-message">
           <h3>🎉 ¡Felicidades! 🎉</h3>
           <p>Has completado el memorama</p>
+          {!hasRestarted && (
+            <p className="memorama-star-reward">⭐ ¡Lo completaste a la primera! Ganaste la segunda estrella.</p>
+          )}
           <p className="final-points">Puntos obtenidos: {points}</p>
-          <button onClick={initializeGame} className="restart-button">
+          <button onClick={() => initializeGame(true)} className="restart-button">
             Jugar de Nuevo
           </button>
         </div>
@@ -138,7 +151,7 @@ function Memorama({ onPointsUpdate }) {
               </div>
             ))}
           </div>
-          <button onClick={initializeGame} className="restart-button">
+          <button onClick={() => initializeGame(true)} className="restart-button">
             Reiniciar Juego
           </button>
         </>

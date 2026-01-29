@@ -127,3 +127,45 @@ export const playErrorSound = () => {
   oscillator.start(audioContext.currentTime)
   oscillator.stop(audioContext.currentTime + 0.3)
 }
+
+// Fanfarria de victoria estilo Final Fantasy (melodía ascendente triunfal)
+export const playVictoryFanfare = () => {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)()
+
+  // Melodía tipo victoria FF: notas ascendentes y acorde final (Eb major)
+  const notes = [
+    { freq: 311.13, duration: 0.2 },   // Eb4
+    { freq: 369.99, duration: 0.2 },   // G4
+    { freq: 415.30, duration: 0.2 },   // Ab4
+    { freq: 523.25, duration: 0.35 },  // C5
+    { freq: 622.25, duration: 0.2 },   // Eb5
+    { freq: 523.25, duration: 0.25 }, // C5
+    { freq: 415.30, duration: 0.4 },  // Ab4 (sostenido)
+    { freq: 311.13, duration: 0.2 },   // Eb4
+    { freq: 369.99, duration: 0.2 },   // G4
+    { freq: 466.16, duration: 0.5 },  // Bb4 - final
+  ]
+
+  let time = audioContext.currentTime
+
+  notes.forEach(({ freq, duration }) => {
+    const oscillator = audioContext.createOscillator()
+    const gainNode = audioContext.createGain()
+
+    oscillator.connect(gainNode)
+    gainNode.connect(audioContext.destination)
+
+    oscillator.frequency.value = freq
+    oscillator.type = 'square'
+
+    gainNode.gain.setValueAtTime(0, time)
+    gainNode.gain.linearRampToValueAtTime(0.2, time + 0.02)
+    gainNode.gain.setValueAtTime(0.2, time + duration - 0.05)
+    gainNode.gain.linearRampToValueAtTime(0.01, time + duration)
+
+    oscillator.start(time)
+    oscillator.stop(time + duration)
+
+    time += duration + 0.05
+  })
+}
