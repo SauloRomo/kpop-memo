@@ -12,7 +12,7 @@ function Trivia({ onPointsUpdate, onTriviaComplete }) {
   const [hasErrors, setHasErrors] = useState(false)
 
   useEffect(() => {
-    // Mezclar las preguntas al iniciar
+    // Shuffle questions on init
     const shuffled = [...triviaQuestions].sort(() => Math.random() - 0.5)
     setCurrentQuestion(0)
     setScore(0)
@@ -23,7 +23,7 @@ function Trivia({ onPointsUpdate, onTriviaComplete }) {
   }, [])
 
   useEffect(() => {
-    // Solo dar estrella si completaste sin errores
+    // Only award star if completed with no errors
     if (gameFinished && onTriviaComplete && !hasErrors) {
       onTriviaComplete()
     }
@@ -41,12 +41,12 @@ function Trivia({ onPointsUpdate, onTriviaComplete }) {
     setShowResult(true)
 
     if (isCorrect) {
-      playSuccessSound() // Sonido de éxito
+      playSuccessSound() // Success sound
       setScore(score + 10)
       onPointsUpdate(10)
     } else {
-      playErrorSound() // Sonido de error
-      setHasErrors(true) // Marcar que hubo un error
+      playErrorSound() // Error sound
+      setHasErrors(true) // Mark that there was an error
     }
   }
 

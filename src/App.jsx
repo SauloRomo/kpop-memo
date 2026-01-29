@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Memorama from './components/Memorama'
 import Trivia from './components/Trivia'
-import { playVictoryFanfare } from './utils/sounds'
+import { playVictoryFanfare, unlockVictoryAudio } from './utils/sounds'
 import './App.css'
 
 function App() {
@@ -11,7 +11,25 @@ function App() {
   const [memoramaFirstTryStar, setMemoramaFirstTryStar] = useState(false)
   const [showThirdStarModal, setShowThirdStarModal] = useState(false)
   const prevStarsRef = useRef(0)
+  const audioUnlockedRef = useRef(false)
   const MAX_STARS = 3
+
+  // Unlock victory audio on first user click (browser policy)
+  useEffect(() => {
+    const unlock = () => {
+      if (audioUnlockedRef.current) return
+      audioUnlockedRef.current = true
+      unlockVictoryAudio()
+      document.removeEventListener('click', unlock)
+      document.removeEventListener('touchend', unlock)
+    }
+    document.addEventListener('click', unlock, { once: true })
+    document.addEventListener('touchend', unlock, { once: true })
+    return () => {
+      document.removeEventListener('click', unlock)
+      document.removeEventListener('touchend', unlock)
+    }
+  }, [])
 
   const handlePointsUpdate = (points) => {
     setTotalPoints(prev => prev + points)
@@ -25,7 +43,7 @@ function App() {
     setMemoramaFirstTryStar(true)
   }
 
-  // Estrella 3 solo si ya tienes las otras dos (trivia + memorama a la primera) y completas trivia de nuevo
+  // Star 3 only if you already have the other two (trivia + memorama first try) and complete trivia again
   const star1 = triviaCompletions >= 1 ? 1 : 0
   const star2 = memoramaFirstTryStar ? 1 : 0
   const star3 = triviaCompletions >= 2 && memoramaFirstTryStar ? 1 : 0
@@ -41,6 +59,18 @@ function App() {
 
   return (
     <div className="app">
+      {showThirdStarModal && (
+        <div className="third-star-overlay" onClick={() => setShowThirdStarModal(false)}>
+          <div className="third-star-modal" onClick={e => e.stopPropagation()}>
+            <div className="third-star-stars">⭐⭐⭐</div>
+            <h2 className="third-star-title">¡Las 3 estrellas!</h2>
+            <p className="third-star-message">Contacta al programador para tu premio</p>
+            <button type="button" className="third-star-close" onClick={() => setShowThirdStarModal(false)}>
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
       <header className="app-header">
         <h1>🎵 K-Pop Games 🎵</h1>
         <div className="header-right">

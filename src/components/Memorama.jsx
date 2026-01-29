@@ -27,14 +27,14 @@ function Memorama({ onPointsUpdate, onMemoramaCompleteFirstTry }) {
 
   const initializeGame = (isRestart = false) => {
     if (isRestart) setHasRestarted(true)
-    // Duplicar las tarjetas y mezclarlas
+    // Duplicate cards and shuffle
     const duplicatedCards = [...members, ...members].map((member, index) => ({
       ...member,
       id: `${member.name}-${index}`,
       isFlipped: false,
     }))
 
-    // Mezclar las tarjetas
+    // Shuffle cards
     const shuffled = duplicatedCards.sort(() => Math.random() - 0.5)
     setCards(shuffled)
     setFlippedCards([])
@@ -73,18 +73,18 @@ function Memorama({ onPointsUpdate, onMemoramaCompleteFirstTry }) {
     }
 
     if (firstCard.name === secondCard.name) {
-      // ¡Coincidencia!
-      playMatchSound() // Sonido de éxito
+      // Match!
+      playMatchSound() // Success sound
       setMatchedPairs([...matchedPairs, firstCard.name])
       setPoints(points + 1)
       onPointsUpdate(1)
       
-      // Mantener las tarjetas volteadas
+      // Keep cards flipped
       setFlippedCards([])
       setIsChecking(false)
     } else {
-      // No coinciden, voltear de nuevo
-      playErrorSound() // Sonido de error
+      // No match, flip back
+      playErrorSound() // Error sound
       setTimeout(() => {
         const newCards = cards.map(c =>
           flippedIds.includes(c.id) && !matchedPairs.includes(c.name)
@@ -144,7 +144,7 @@ function Memorama({ onPointsUpdate, onMemoramaCompleteFirstTry }) {
                       src={card.image} 
                       alt={card.name} 
                       onError={(e) => {
-                        // Fallback si la imagen no carga
+                        // Fallback if image fails to load
                         e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(card.name)}&background=667eea&color=fff&size=400&bold=true`
                       }}
                       loading="lazy"

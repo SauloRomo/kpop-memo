@@ -1,9 +1,9 @@
-// Integrantes de BTS y Stray Kids con imágenes oficiales
-// Stray Kids: Imágenes oficiales desde CDN de JYP Entertainment
-// BTS: Imágenes desde Wikimedia Commons (dominio público y Creative Commons)
+// BTS and Stray Kids members with official images
+// Stray Kids: Official images from JYP Entertainment CDN
+// BTS: Images from Wikimedia Commons (public domain and Creative Commons)
 
 export const members = [
-  // BTS (7 integrantes) - Imágenes desde Wikimedia Commons
+  // BTS (7 members) - Images from Wikimedia Commons
   {
     name: 'RM',
     group: 'BTS',
@@ -39,7 +39,7 @@ export const members = [
     group: 'BTS',
     image: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Jungkook_for_BTS_5th_anniversary_party_in_LA_photoshoot_by_Dispatch%2C_May_2018_04.jpg'
   },
-  // Stray Kids (8 integrantes) - Imágenes oficiales desde CDN
+  // Stray Kids (8 members) - Official images from CDN
   {
     name: 'Bang Chan',
     group: 'Stray Kids',

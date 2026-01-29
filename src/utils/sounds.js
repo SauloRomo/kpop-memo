@@ -1,4 +1,16 @@
-// Utilidad para reproducir sonidos usando Web Audio API
+// Sound utilities using Web Audio API
+import victoryFanfareMp3 from './Final Fantasy Victory Fanfare - Sound Effect [HQ].mp3'
+
+const victoryAudio = new Audio(victoryFanfareMp3)
+
+/** Call once after the user's first click to unlock audio (browser policy) */
+export const unlockVictoryAudio = () => {
+  victoryAudio.play().then(() => {
+    victoryAudio.pause()
+    victoryAudio.currentTime = 0
+  }).catch(() => {})
+}
+
 export const playSound = (type) => {
   const audioContext = new (window.AudioContext || window.webkitAudioContext)()
   
@@ -7,18 +19,18 @@ export const playSound = (type) => {
   
   switch (type) {
     case 'success':
-      // Sonido de éxito - tono ascendente
-      frequency = 523.25 // Do
+      // Success sound - ascending tone
+      frequency = 523.25 // C
       duration = 0.2
       break
     case 'match':
-      // Sonido de coincidencia - dos tonos
-      frequency = 659.25 // Mi
+      // Match sound - two tones
+      frequency = 659.25 // E
       duration = 0.15
       break
     case 'error':
-      // Sonido de error - tono bajo
-      frequency = 220 // La bajo
+      // Error sound - low tone
+      frequency = 220 // Low A
       duration = 0.2
       break
     default:
@@ -42,18 +54,18 @@ export const playSound = (type) => {
   oscillator.stop(audioContext.currentTime + duration)
 }
 
-// Sonido especial para match en memorama - dos tonos
+// Special sound for memorama match - two tones
 export const playMatchSound = () => {
   const audioContext = new (window.AudioContext || window.webkitAudioContext)()
   
-  // Primer tono
+  // First tone
   const oscillator1 = audioContext.createOscillator()
   const gainNode1 = audioContext.createGain()
   
   oscillator1.connect(gainNode1)
   gainNode1.connect(audioContext.destination)
   
-  oscillator1.frequency.value = 523.25 // Do
+  oscillator1.frequency.value = 523.25 // C
   oscillator1.type = 'sine'
   
   gainNode1.gain.setValueAtTime(0.3, audioContext.currentTime)
@@ -62,7 +74,7 @@ export const playMatchSound = () => {
   oscillator1.start(audioContext.currentTime)
   oscillator1.stop(audioContext.currentTime + 0.15)
   
-  // Segundo tono (más alto)
+  // Second tone (higher)
   setTimeout(() => {
     const oscillator2 = audioContext.createOscillator()
     const gainNode2 = audioContext.createGain()
@@ -70,7 +82,7 @@ export const playMatchSound = () => {
     oscillator2.connect(gainNode2)
     gainNode2.connect(audioContext.destination)
     
-    oscillator2.frequency.value = 659.25 // Mi
+    oscillator2.frequency.value = 659.25 // E
     oscillator2.type = 'sine'
     
     gainNode2.gain.setValueAtTime(0.3, audioContext.currentTime)
@@ -81,12 +93,12 @@ export const playMatchSound = () => {
   }, 100)
 }
 
-// Sonido de éxito para trivia
+// Success sound for trivia
 export const playSuccessSound = () => {
   const audioContext = new (window.AudioContext || window.webkitAudioContext)()
   
-  // Secuencia de tres tonos ascendentes
-  const notes = [523.25, 659.25, 783.99] // Do, Mi, Sol
+  // Sequence of three ascending tones
+  const notes = [523.25, 659.25, 783.99] // C, E, G
   
   notes.forEach((freq, index) => {
     setTimeout(() => {
@@ -108,7 +120,7 @@ export const playSuccessSound = () => {
   })
 }
 
-// Sonido de error
+// Error sound
 export const playErrorSound = () => {
   const audioContext = new (window.AudioContext || window.webkitAudioContext)()
   
@@ -118,7 +130,7 @@ export const playErrorSound = () => {
   oscillator.connect(gainNode)
   gainNode.connect(audioContext.destination)
   
-  oscillator.frequency.value = 220 // La bajo
+  oscillator.frequency.value = 220 // Low A
   oscillator.type = 'sawtooth'
   
   gainNode.gain.setValueAtTime(0.2, audioContext.currentTime)
@@ -128,44 +140,8 @@ export const playErrorSound = () => {
   oscillator.stop(audioContext.currentTime + 0.3)
 }
 
-// Fanfarria de victoria estilo Final Fantasy (melodía ascendente triunfal)
+// Final Fantasy victory fanfare (MP3) — plays automatically once unlocked via unlockVictoryAudio on first click
 export const playVictoryFanfare = () => {
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)()
-
-  // Melodía tipo victoria FF: notas ascendentes y acorde final (Eb major)
-  const notes = [
-    { freq: 311.13, duration: 0.2 },   // Eb4
-    { freq: 369.99, duration: 0.2 },   // G4
-    { freq: 415.30, duration: 0.2 },   // Ab4
-    { freq: 523.25, duration: 0.35 },  // C5
-    { freq: 622.25, duration: 0.2 },   // Eb5
-    { freq: 523.25, duration: 0.25 }, // C5
-    { freq: 415.30, duration: 0.4 },  // Ab4 (sostenido)
-    { freq: 311.13, duration: 0.2 },   // Eb4
-    { freq: 369.99, duration: 0.2 },   // G4
-    { freq: 466.16, duration: 0.5 },  // Bb4 - final
-  ]
-
-  let time = audioContext.currentTime
-
-  notes.forEach(({ freq, duration }) => {
-    const oscillator = audioContext.createOscillator()
-    const gainNode = audioContext.createGain()
-
-    oscillator.connect(gainNode)
-    gainNode.connect(audioContext.destination)
-
-    oscillator.frequency.value = freq
-    oscillator.type = 'square'
-
-    gainNode.gain.setValueAtTime(0, time)
-    gainNode.gain.linearRampToValueAtTime(0.2, time + 0.02)
-    gainNode.gain.setValueAtTime(0.2, time + duration - 0.05)
-    gainNode.gain.linearRampToValueAtTime(0.01, time + duration)
-
-    oscillator.start(time)
-    oscillator.stop(time + duration)
-
-    time += duration + 0.05
-  })
+  victoryAudio.currentTime = 0
+  victoryAudio.play().catch(() => {})
 }
