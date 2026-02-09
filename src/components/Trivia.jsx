@@ -119,6 +119,11 @@ function Trivia({ onPointsUpdate, onTriviaComplete }) {
 
       <div className="question-container">
         <div className="question-card">
+          {question.image && (
+            <div className="question-photo-wrap">
+              <img src={question.image} alt="¿Quién es?" className="question-photo" />
+            </div>
+          )}
           <h3 className="question-text">{question.question}</h3>
           
           <div className="answers-grid">
