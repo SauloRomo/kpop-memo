@@ -64,7 +64,7 @@ function App() {
           <div className="third-star-modal" onClick={e => e.stopPropagation()}>
             <div className="third-star-stars">⭐⭐⭐</div>
             <h2 className="third-star-title">¡Las 3 estrellas!</h2>
-            <p className="third-star-message">Contacta al programador para tu premio</p>
+            <p className="third-star-message">Felicidades !!!!</p>
             <button type="button" className="third-star-close" onClick={() => setShowThirdStarModal(false)}>
               Cerrar
             </button>
